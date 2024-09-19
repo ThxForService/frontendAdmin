@@ -47,12 +47,22 @@ const SubMenus = () => {
 function getSubMenus(menuCode) {
   switch (menuCode) {
     case 'member': // 회원관리
-      return [{ code: 'list', name: '회원목록', url: '/member/list' }];
+      return [{ code: 'list', name: '회원 목록', url: '/member/list' }];
     case 'board': // 게시판 관리
       return [
         { code: 'list', name: '게시판 목록', url: '/board/list' },
         { code: 'register', name: '게시판 등록', url: '/board/register' },
         { code: 'posts', name: '게시글 관리', url: '/board/posts' },
+      ];
+    case 'counseling': //상담관리
+      return [
+        { code: 'apply', name: '상담 접수 목록', url: '/counseling' },
+        { code: 'group', name: '집단 상담 프로그램', url: '/counseling/group' },
+        {
+          code: 'register',
+          name: '집단 상담 프로그램 등록',
+          url: '/counseling/group/register',
+        },
       ];
     default:
       return [];
