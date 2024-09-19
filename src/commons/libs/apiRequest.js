@@ -23,14 +23,15 @@ export default function apiRequest(url, method = 'GET', data, headers) {
   if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase()) && data) {
     options.data = data;
   }
-
   const token = cookies.load('token');
   if (token && token.trim()) {
     headers = headers ?? {};
     headers.Authorization = `Bearer ${token}`;
   }
 
-  if (headers) options.headers = headers;
-
-  return axios(options);
+  try {
+    return axios(options);
+  } catch (err) {
+    console.log('err', err);
+  }
 }
