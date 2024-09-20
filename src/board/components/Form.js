@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createBoard, updateBoard } from '@/board/apis/apiboard'; // API 호출 함수 import
+import { createBoard, updateBoard } from '@/board/apis/apiboard';
 
 const RequestBoardConfigForm = () => {
   const [form, setForm] = useState({
