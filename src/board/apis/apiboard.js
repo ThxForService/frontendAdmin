@@ -48,6 +48,22 @@ export const deleteBoard = async (bid) => {
       handleApiError(error);
     }
   };
+
+  // 게시판 정보 조회 함수 (특정 게시판 정보 불러오기)
+  export const getBoardInfo = (bid) => {
+    return new Promise((resolve, reject) => {
+      (async () => {
+        try {
+          const res = await requestData(`/board/admin/info/${bid}`, 'GET');
+          resolve(res); // 게시판 정보 반환
+          console.log(res)
+        } catch (err) {
+          console.error('Error fetching board info:', err);
+          reject(err); 
+        }
+      })();
+    });
+  };
   
 
 

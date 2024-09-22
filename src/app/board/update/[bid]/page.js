@@ -5,7 +5,7 @@ const BoardUpdatePage = ({ params }) => {
 
   return (
     <AdminOnlyContainer>
-      <UpdateContainer />
+      <UpdateContainer bid={bid} />
     </AdminOnlyContainer>
   );
 };

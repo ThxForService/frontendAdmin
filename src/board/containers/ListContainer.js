@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { getCommonActions } from '@/commons/contexts/CommonContext';
-import List from '@/board/components/list';
+import List from '@/board/components/List';
 import { boardList, deleteBoard } from '@/board/apis/apiboard'; 
 const ListContainer = () => {
   const { setMenuCode, setSubMenuCode } = getCommonActions();
