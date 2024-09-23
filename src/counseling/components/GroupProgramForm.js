@@ -59,6 +59,7 @@ const GroupProgramForm = ({ onSubmit }) => {
       endDate: '',
       capacity: '',
       status: '',
+      empNo: '',
     });
   };
 
@@ -81,6 +82,17 @@ const GroupProgramForm = ({ onSubmit }) => {
           <StyledInput
             name="description"
             value={form.description}
+            onChange={handleChange}
+            required
+          />
+        </dd>
+      </dl>
+      <dl>
+        <dt>{t('상담사 사번')}</dt>
+        <dd>
+          <StyledInput
+            name="empNo"
+            value={form.empNo}
             onChange={handleChange}
             required
           />
