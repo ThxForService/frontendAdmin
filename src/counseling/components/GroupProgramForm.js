@@ -23,12 +23,12 @@ const FormBox = styled.form`
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #0070f3; 
+    background-color: #0070f3;
     color: white;
     font-size: 16px;
 
     &:hover {
-      background-color: #005bb5; 
+      background-color: #005bb5;
     }
   }
 `;
@@ -67,46 +67,105 @@ const GroupProgramForm = ({ onSubmit }) => {
       <dl>
         <dt>{t('집단 상담 프로그램명')}</dt>
         <dd>
-          <StyledInput name="pgmNm" value={form.pgmNm} onChange={handleChange} required />
+          <StyledInput
+            name="pgmNm"
+            value={form.pgmNm}
+            onChange={handleChange}
+            required
+          />
         </dd>
       </dl>
       <dl>
         <dt>{t('프로그램 설명')}</dt>
         <dd>
-          <StyledInput name="description" value={form.description} onChange={handleChange} required />
+          <StyledInput
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            required
+          />
         </dd>
       </dl>
       <dl>
         <dt>{t('프로그램 시작일')}</dt>
         <dd>
-          <StyledInput type="date" name="programStartDate" value={form.programStartDate} onChange={handleChange} required />
+          <StyledInput
+            type="date"
+            name="programStartDate"
+            value={form.programStartDate}
+            onChange={handleChange}
+            required
+          />
         </dd>
       </dl>
       <dl>
         <dt>{t('신청 시작일')}</dt>
         <dd>
-          <StyledInput type="date" name="startDate" value={form.startDate} onChange={handleChange} required />
+          <StyledInput
+            type="date"
+            name="startDate"
+            value={form.startDate}
+            onChange={handleChange}
+            required
+          />
         </dd>
       </dl>
       <dl>
         <dt>{t('신청 종료일')}</dt>
         <dd>
-          <StyledInput type="date" name="endDate" value={form.endDate} onChange={handleChange} required />
+          <StyledInput
+            type="date"
+            name="endDate"
+            value={form.endDate}
+            onChange={handleChange}
+            required
+          />
         </dd>
       </dl>
       <dl>
         <dt>{t('신청 정원')}</dt>
         <dd>
-          <StyledInput type="number" name="capacity" value={form.capacity} onChange={handleChange} required />
+          <StyledInput
+            type="number"
+            name="capacity"
+            value={form.capacity}
+            onChange={handleChange}
+            required
+          />
         </dd>
       </dl>
       <dl>
         <dt>{t('접수 상태')}</dt>
         <dd>
-          <StyledInput name="status" value={form.status} onChange={handleChange} required />
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="접수 중"
+                checked={form.status === '접수 중'}
+                onChange={handleChange}
+                required
+              />
+              {t('접수 중')}
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="접수 완료"
+                checked={form.status === '접수 완료'}
+                onChange={handleChange}
+                required
+              />
+              {t('접수 완료')}
+            </label>
+          </div>
         </dd>
       </dl>
-      <button type="button" onClick={handleReset}>{t('다시 입력')}</button>
+      <button type="button" onClick={handleReset}>
+        {t('다시 입력')}
+      </button>
       <button type="submit">{t('등록')}</button>
     </FormBox>
   );
