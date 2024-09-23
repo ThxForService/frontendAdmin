@@ -3,7 +3,7 @@ import apiRequest from '../../commons/libs/apiRequest';
 //프로그램 등록
 export const apiRegisterGroupCounseling = (form) =>
   new Promise((resolve, reject) => {
-    apiRequest('/reservation/admin/group', 'POST', form)
+    apiRequest('/reservation/admin/group/register', 'POST', form)
       .then((res) => {
         if (res.status !== 201) {
           reject(res.data);
