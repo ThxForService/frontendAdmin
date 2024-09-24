@@ -1,47 +1,41 @@
 'use client';
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { getCommonActions } from '@/commons/contexts/CommonContext';
-import Form from '@/board/components/Form'; 
+import { boardDataList } from '@/board/apis/apiboard';
+import BoardList from '@/board/components/BoardList';
 
 const PostsContainer = () => {
   const { setMenuCode, setSubMenuCode } = getCommonActions();
-  
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useLayoutEffect(() => {
-    setMenuCode("board");
-    setSubMenuCode("register");
-  }, [setSubMenuCode, setMenuCode]);
-  
-  const initialValues = {
-    mode: 'add',
-    listOrder: 0,
-    bid: '',
-    bname: '',
-    active: false,
-    rowsPerPage: 20,
-    pageCountPc: 10,
-    pageCountMobile: 5,
-    useReply: false,
-    useComment: false,
-    useEditor: false,
-    useUploadImage: false,
-    useUploadFile: false,
-    locationAfterWriting: 'list',
-    showListBelowView: false,
-    skin: 'default',
-    category: '',
-    listAccessType: 'ALL',
-    viewAccessType: 'ALL',
-    writeAccessType: 'ALL',
-    replyAccessType: 'ALL',
-    commentAccessType: 'ALL',
-    htmlTop: '',
-    htmlBottom: ''
+    setMenuCode('board');
+    setSubMenuCode('posts');
+    fetchPosts();
+  }, [setMenuCode, setSubMenuCode]);
+
+  const fetchPosts = async () => {
+    setLoading(true);
+    try {
+      const data = await boardDataList({ page: 1, limit: 10 }); // 페이지 및 한 페이지당 게시글 수 설정
+      setPosts(data);
+    } catch (err) {
+      setError(err);
+      console.error('Error fetching posts:', err);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <h1>Error loading posts: {error.message}</h1>;
 
   return (
     <div>
-      <h1>게시판 등록</h1>
-      <Form initialValues={initialValues} />
+      <h1>게시글 목록</h1>
+      <BoardList posts={posts} />
     </div>
   );
 };

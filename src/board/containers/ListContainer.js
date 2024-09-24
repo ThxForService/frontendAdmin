@@ -27,14 +27,12 @@ const ListContainer = () => {
   const handleDelete = async (bid) => {
     try {
       await deleteBoard(bid);
-
       fetchBoardList();
     } catch (err) {
       console.error('게시판 삭제 실패:', err);
     }
   };
 
-  // 컴포넌트 마운트 시 목록 조회
   useEffect(() => {
     fetchBoardList();
   }, []);

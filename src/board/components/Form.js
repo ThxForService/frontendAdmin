@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { createBoard, updateBoard } from '@/board/apis/apiboard';
+import { useRouter } from 'next/navigation';
 
 const Form = ({ initialValues }) => {
   const [form, setForm] = useState(initialValues);
   const [errors, setErrors] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     setForm(initialValues);
@@ -13,11 +15,12 @@ const Form = ({ initialValues }) => {
     const { name, value, type, checked } = e.target;
     setForm({
       ...form,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     try {
       if (form.mode === 'edit') {
@@ -25,10 +28,10 @@ const Form = ({ initialValues }) => {
       } else {
         await createBoard(form);
       }
-      alert('게시판이 성공적으로 처리되었습니다.');
-      setForm(initialValues);
+      router.replace('/board/list');
     } catch (error) {
-      setErrors(error);
+      setErrors(error.message);
+      console.error(error);
     }
   };
 
@@ -42,6 +45,7 @@ const Form = ({ initialValues }) => {
           value={form.bid}
           onChange={handleChange}
           required
+          readOnly={form.mode === 'edit'}
         />
       </div>
 
@@ -80,7 +84,6 @@ const Form = ({ initialValues }) => {
         <label>게시판 스킨:</label>
         <select name="skin" value={form.skin} onChange={handleChange}>
           <option value="default">default</option>
-          {/* 필요에 따라 다른 옵션 추가 */}
         </select>
       </div>
 
@@ -164,14 +167,9 @@ const Form = ({ initialValues }) => {
         />
       </div>
 
-
       <div>
         <label>HTML 상단:</label>
-        <textarea
-          name="htmlTop"
-          value={form.htmlTop}
-          onChange={handleChange}
-        />
+        <textarea name="htmlTop" value={form.htmlTop} onChange={handleChange} />
       </div>
 
       <div>
@@ -183,7 +181,11 @@ const Form = ({ initialValues }) => {
         />
       </div>
 
-      <button type="submit">{form.mode === 'edit' ? '게시판 수정' : '게시판 등록'}</button>
+      <button type="submit">
+        {form.mode === 'edit' ? '게시판 수정' : '게시판 등록'}
+      </button>
+
+      {errors && <div className="error">{errors}</div>}
     </form>
   );
 };

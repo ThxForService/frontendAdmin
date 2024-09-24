@@ -4,10 +4,10 @@ import { getCommonActions } from '@/commons/contexts/CommonContext';
 import Form from '@/board/components/Form';
 import { getBoardInfo } from '@/board/apis/apiboard';
 
-const UpdateContainer = ({ bid }) => {
+const BoardContainer = ({ bid }) => {
   const { setMenuCode, setSubMenuCode } = getCommonActions();
   const [initialValues, setInitialValues] = useState({
-    mode: 'edit',
+    mode: 'add',
     listOrder: 0,
     bid: '',
     bname: '',
@@ -34,26 +34,28 @@ const UpdateContainer = ({ bid }) => {
   });
 
   useLayoutEffect(() => {
-    setMenuCode("board");
-    setSubMenuCode("register");
-    fetchBoardInfo(); // 게시판 정보 가져오기
-  }, [setSubMenuCode, setMenuCode]);
+    setMenuCode('board');
+    setSubMenuCode(bid ? 'update' : 'register'); 
+    if (bid) {
+      fetchBoardInfo(); 
+    }
+  }, [setSubMenuCode, setMenuCode, bid]);
 
   const fetchBoardInfo = async () => {
     try {
       const data = await getBoardInfo(bid);
       setInitialValues({ ...data, mode: 'edit' });
     } catch (error) {
-      console.error('Error fetching board info:', error);
+      console.error(error);
     }
   };
 
   return (
     <div>
-      <h1>게시판 수정</h1>
+      <h1>{bid ? '게시판 수정' : '게시판 등록'}</h1>
       <Form initialValues={initialValues} />
     </div>
   );
 };
 
-export default React.memo(UpdateContainer);
+export default React.memo(BoardContainer);
