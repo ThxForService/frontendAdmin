@@ -83,8 +83,9 @@ const GroupUpdateContainer = ({ params }) => {
       const requiredFields = {
         pgmNm: t('프로그램명을_입력하세요.'),
         description: t('프로그램 설명을_입력하세요.'),
-        capacity: t('정원을_입력하세요.'),
+        empNo: t('상담사_사번을_입력하세요.'),
         programStartDate: t('프로그램 시작일자를_입력하세요.'),
+        programStartTime: t('프로그램 시작일시를_입력하세요.'),
         startDate: t('신청 시작일자를_입력하세요.'),
         endDate: t('신청 종료일자를_입력하세요.'),
       };
