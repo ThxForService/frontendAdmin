@@ -1,58 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBoard, updateBoard } from '@/board/apis/apiboard';
+import { useRouter } from 'next/navigation';
 
-const RequestBoardConfigForm = () => {
-  const [form, setForm] = useState({
-    mode: 'add', // 모드 설정: add or edit
-    listOrder: 0, // 진열 가중치
-    bid: '', // 게시판 ID
-    bname: '', // 게시판 이름
-    active: false, // 게시판 활성화 여부
-    rowsPerPage: 20, // 한 페이지 게시글 수
-    pageCountPc: 10, // PC 페이지 네비게이션 수
-    pageCountMobile: 5, // 모바일 페이지 네비게이션 수
-    useReply: false, // 답글 사용 여부
-    useComment: false, // 댓글 사용 여부
-    useEditor: false, // 에디터 사용 여부
-    useUploadImage: false, // 이미지 첨부 사용 여부
-    useUploadFile: false, // 파일 첨부 사용 여부
-    locationAfterWriting: 'list', // 작성 후 이동할 위치
-    showListBelowView: false, // 게시판 하단 목록 노출 여부
-    skin: 'default', // 게시판 스킨
-    category: '', // 게시판 카테고리
-    listAccessType: 'ALL', // 글 목록 권한 설정
-    viewAccessType: 'ALL', // 글 보기 권한 설정
-    writeAccessType: 'ALL', // 글 쓰기 권한 설정
-    replyAccessType: 'ALL', // 답글 권한 설정
-    commentAccessType: 'ALL', // 댓글 권한 설정
-    htmlTop: '', // 상단 HTML
-    htmlBottom: '' // 하단 HTML
-  });
+const Form = ({ initialValues }) => {
+  const [form, setForm] = useState(initialValues);
+  const [errors, setErrors] = useState(null);
+  const router = useRouter();
 
-  const [errors, setErrors] = useState(null); // 에러 상태 관리
+  useEffect(() => {
+    setForm(initialValues);
+  }, [initialValues]);
 
-  // 입력 핸들러
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({
       ...form,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
 
+    e.preventDefault();
     try {
-      if (form.mode === 'add') {
-        await createBoard(form); // 게시판 생성
+      if (form.mode === 'edit') {
+        await updateBoard(form);
       } else {
-        await updateBoard(form); // 게시판 수정
+        await createBoard(form);
       }
-      alert('게시판이 성공적으로 처리되었습니다.');
-      setForm({ ...form, mode: 'add', bid: '', bname: '' });
+      router.replace('/board/list');
     } catch (error) {
-      setErrors(error); // 에러 발생 시 처리
+      setErrors(error.message);
+      console.error(error);
     }
   };
 
@@ -66,6 +45,7 @@ const RequestBoardConfigForm = () => {
           value={form.bid}
           onChange={handleChange}
           required
+          readOnly={form.mode === 'edit'}
         />
       </div>
 
@@ -187,9 +167,27 @@ const RequestBoardConfigForm = () => {
         />
       </div>
 
-      <button type="submit">{form.mode === 'add' ? '게시판 등록' : '게시판 수정'}</button>
+      <div>
+        <label>HTML 상단:</label>
+        <textarea name="htmlTop" value={form.htmlTop} onChange={handleChange} />
+      </div>
+
+      <div>
+        <label>HTML 하단:</label>
+        <textarea
+          name="htmlBottom"
+          value={form.htmlBottom}
+          onChange={handleChange}
+        />
+      </div>
+
+      <button type="submit">
+        {form.mode === 'edit' ? '게시판 수정' : '게시판 등록'}
+      </button>
+
+      {errors && <div className="error">{errors}</div>}
     </form>
   );
 };
 
-export default RequestBoardConfigForm;
+export default Form;
