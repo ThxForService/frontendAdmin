@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import cookies from 'react-cookies';
 import { apiUser } from '@/member/apis/apiLogin';
 
@@ -17,7 +17,7 @@ const UserInfoContext = createContext({
     // 상태 변경 함수
     setUserInfo: null,
     setIsLogin: null,
-    setisStudent: null,
+    setIsStudent: null,
     setIsCounselor: null,
     setIsProfessor: null,
     setIsAdmin: null,
@@ -27,40 +27,40 @@ const UserInfoContext = createContext({
 const UserInfoProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
+  const [isStudent, setIsStudent] = useState(false);
   const [isCounselor, setIsCounselor] = useState(false);
-  const [isProfessor, setIsProfessor] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const value = {
-    states: { userInfo, isLogin, isAdmin, isCounselor, isProfessor },
+    states: { userInfo, isLogin, isAdmin, isStudent, isCounselor },
     actions: {
       setUserInfo,
       setIsLogin,
       setIsAdmin,
       setIsCounselor,
-      setIsProfessor,
+      setIsStudent,
     },
   };
 
   const token = cookies.load('token');
-  if (!isLogin && token && token.trim()) {
-    (async () => {
-      try {
-        const user = await apiUser();
+  useEffect(() => {
+    if (!isLogin && token && token.trim()) {
+      (async () => {
+        try {
+          const user = await apiUser();
 
-        setUserInfo(user);
-        setIsLogin(true);
-
-        setIsAdmin(user.authority === 'ADMIN');
-        setIsCounselor(user.authority === 'COUNSELOR');
-        setIsProfessor(user.authority === 'PROFESSOR');
-        setIsStudent(user.authority === 'STUDENT');
-      } catch (err) {
-        // 토큰 만료, 토큰이 잘못된 경우
-        cookies.remove('token', { path: '/' });
-      }
-    })();
-  }
+          setUserInfo(user);
+          setIsLogin(true);
+          setIsAdmin(user.authority === 'ADMIN');
+          setIsCounselor(user.authority === 'COUNSELOR');
+          setIsStudent(user.authority === 'STUDENT');
+        } catch (err) {
+          // 토큰 만료, 토큰이 잘못된 경우
+          cookies.remove('token', { path: '/' });
+        }
+      })();
+    }
+  }, [isLogin, token]);
 
   return (
     <UserInfoContext.Provider value={value}>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyledInput } from '@/commons/components/inputs/StyledInput';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { IoIosRadioButtonOn, IoIosRadioButtonOff } from 'react-icons/io';
 
 const FormBox = styled.form`
   dl {
@@ -33,35 +34,15 @@ const FormBox = styled.form`
   }
 `;
 
-const GroupProgramForm = ({ onSubmit }) => {
+const GroupProgramForm = ({
+  onSubmit,
+  form,
+  onChange,
+  onReset,
+  onClick,
+  status,
+}) => {
   const { t } = useTranslation();
-  const [form, setForm] = useState({
-    pgmNm: '',
-    description: '',
-    programStartDate: '',
-    startDate: '',
-    endDate: '',
-    capacity: '',
-    status: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleReset = () => {
-    setForm({
-      pgmNm: '',
-      description: '',
-      programStartDate: '',
-      startDate: '',
-      endDate: '',
-      capacity: '',
-      status: '',
-      empNo: '',
-    });
-  };
 
   return (
     <FormBox autoComplete="off" onSubmit={onSubmit}>
@@ -70,8 +51,8 @@ const GroupProgramForm = ({ onSubmit }) => {
         <dd>
           <StyledInput
             name="pgmNm"
-            value={form.pgmNm}
-            onChange={handleChange}
+            value={form?.pgmNm ?? ''}
+            onChange={onChange}
             required
           />
         </dd>
@@ -81,8 +62,8 @@ const GroupProgramForm = ({ onSubmit }) => {
         <dd>
           <StyledInput
             name="description"
-            value={form.description}
-            onChange={handleChange}
+            value={form?.description ?? ''}
+            onChange={onChange}
             required
           />
         </dd>
@@ -92,8 +73,8 @@ const GroupProgramForm = ({ onSubmit }) => {
         <dd>
           <StyledInput
             name="empNo"
-            value={form.empNo}
-            onChange={handleChange}
+            value={form?.empNo ?? ''}
+            onChange={onChange}
             required
           />
         </dd>
@@ -104,8 +85,20 @@ const GroupProgramForm = ({ onSubmit }) => {
           <StyledInput
             type="date"
             name="programStartDate"
-            value={form.programStartDate}
-            onChange={handleChange}
+            value={form?.programStartDate ?? ''}
+            onChange={onChange}
+            required
+          />
+        </dd>
+      </dl>
+      <dl>
+        <dt>{t('프로그램 시작시간')}</dt>
+        <dd>
+          <StyledInput
+            type="text"
+            name="programStartTime"
+            value={form?.programStartTime ?? ''}
+            onChange={onChange}
             required
           />
         </dd>
@@ -116,8 +109,8 @@ const GroupProgramForm = ({ onSubmit }) => {
           <StyledInput
             type="date"
             name="startDate"
-            value={form.startDate}
-            onChange={handleChange}
+            value={form?.startDate ?? ''}
+            onChange={onChange}
             required
           />
         </dd>
@@ -128,8 +121,8 @@ const GroupProgramForm = ({ onSubmit }) => {
           <StyledInput
             type="date"
             name="endDate"
-            value={form.endDate}
-            onChange={handleChange}
+            value={form?.endDate ?? ''}
+            onChange={onChange}
             required
           />
         </dd>
@@ -137,45 +130,36 @@ const GroupProgramForm = ({ onSubmit }) => {
       <dl>
         <dt>{t('신청 정원')}</dt>
         <dd>
-          <StyledInput
-            type="number"
+          <select
             name="capacity"
-            value={form.capacity}
-            onChange={handleChange}
-            required
-          />
+            value={form?.capacity ?? 5}
+            onChange={onChange}
+          >
+            {[...new Array(31).keys()].slice(5).map((i) => (
+              <option key={`capacity_${i}`} value={i}>
+                {i}
+                {t('명')}
+              </option>
+            ))}
+          </select>
         </dd>
       </dl>
       <dl>
         <dt>{t('접수 상태')}</dt>
         <dd>
-          <div>
-            <label>
-              <input
-                type="radio"
-                name="status"
-                value="접수 중"
-                checked={form.status === '접수 중'}
-                onChange={handleChange}
-                required
-              />
-              {t('접수 중')}
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="status"
-                value="접수 완료"
-                checked={form.status === '접수 완료'}
-                onChange={handleChange}
-                required
-              />
-              {t('접수 완료')}
-            </label>
-          </div>
+          {Object.keys(status).map((s) => (
+            <span key={`status_${s}`} onClick={() => onClick('status', s)}>
+              {s === form?.status ? (
+                <IoIosRadioButtonOn />
+              ) : (
+                <IoIosRadioButtonOff />
+              )}{' '}
+              {status[s]}
+            </span>
+          ))}
         </dd>
       </dl>
-      <button type="button" onClick={handleReset}>
+      <button type="button" onClick={onReset}>
         {t('다시 입력')}
       </button>
       <button type="submit">{t('등록')}</button>
