@@ -3,6 +3,7 @@ import { StyledInput } from '@/commons/components/inputs/StyledInput';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { IoIosRadioButtonOn, IoIosRadioButtonOff } from 'react-icons/io';
+import StyledMessage from '@/commons/components/StyledMessage';
 
 const FormBox = styled.form`
   dl {
@@ -15,6 +16,7 @@ const FormBox = styled.form`
 
     dd {
       flex-grow: 1;
+      position: relative; // 필요에 따라 오류 메시지를 위치시킬 수 있음
     }
   }
 
@@ -37,6 +39,7 @@ const FormBox = styled.form`
 const GroupProgramForm = ({
   onSubmit,
   form,
+  errors,
   onChange,
   onReset,
   onClick,
@@ -53,8 +56,8 @@ const GroupProgramForm = ({
             name="pgmNm"
             value={form?.pgmNm ?? ''}
             onChange={onChange}
-            required
           />
+          <StyledMessage variant="danger">{errors?.pgmNm}</StyledMessage>
         </dd>
       </dl>
       <dl>
@@ -64,8 +67,8 @@ const GroupProgramForm = ({
             name="description"
             value={form?.description ?? ''}
             onChange={onChange}
-            required
           />
+          <StyledMessage variant="danger">{errors?.description}</StyledMessage>
         </dd>
       </dl>
       <dl>
@@ -75,8 +78,8 @@ const GroupProgramForm = ({
             name="empNo"
             value={form?.empNo ?? ''}
             onChange={onChange}
-            required
           />
+          <StyledMessage variant="danger">{errors?.empNo}</StyledMessage>
         </dd>
       </dl>
       <dl>
@@ -87,20 +90,20 @@ const GroupProgramForm = ({
             name="programStartDate"
             value={form?.programStartDate ?? ''}
             onChange={onChange}
-            required
           />
+          <StyledMessage variant="danger">{errors?.programStartDate}</StyledMessage>
         </dd>
       </dl>
       <dl>
         <dt>{t('프로그램 시작시간')}</dt>
         <dd>
           <StyledInput
-            type="text"
+            type="time"
             name="programStartTime"
             value={form?.programStartTime ?? ''}
             onChange={onChange}
-            required
           />
+          <StyledMessage variant="danger">{errors?.programStartTime}</StyledMessage>
         </dd>
       </dl>
       <dl>
@@ -111,8 +114,8 @@ const GroupProgramForm = ({
             name="startDate"
             value={form?.startDate ?? ''}
             onChange={onChange}
-            required
           />
+          <StyledMessage variant="danger">{errors?.startDate}</StyledMessage>
         </dd>
       </dl>
       <dl>
@@ -123,8 +126,8 @@ const GroupProgramForm = ({
             name="endDate"
             value={form?.endDate ?? ''}
             onChange={onChange}
-            required
           />
+          <StyledMessage variant="danger">{errors?.endDate}</StyledMessage>
         </dd>
       </dl>
       <dl>

@@ -8,9 +8,11 @@ import React, {
 import { getCommonActions } from '@/commons/contexts/CommonContext';
 import GroupProgramForm from '../components/GroupProgramForm';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import {
   apiRegisterGroupCounseling,
   apiUpdateGroupCounseling,
+  apiGetGroupProgramView,
 } from '../apis/apiGroupProgram';
 
 import status from '../constants/programStatus';
@@ -31,6 +33,7 @@ const GroupUpdateContainer = ({ params }) => {
   const { setMenuCode, setSubMenuCode } = getCommonActions();
 
   const { pgmSeq } = params;
+  const { t } = useTranslation();
 
   useLayoutEffect(() => {
     setMenuCode('counseling');
@@ -39,6 +42,21 @@ const GroupUpdateContainer = ({ params }) => {
 
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (pgmSeq) {
+      (async () => {
+        try {
+          const data = await apiGetGroupProgramView(pgmSeq);
+          if (data) {
+            setForm(data);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      })();
+    }
+  }, [pgmSeq]);
 
   const router = useRouter();
 
@@ -56,9 +74,58 @@ const GroupUpdateContainer = ({ params }) => {
     (e) => {
       e.preventDefault();
 
-      /* 유효성 검사 S */
+      let _errors = {};
+      let hasErrors = false;
 
-      
+      setErrors({});
+
+      /* 유효성 검사 S */
+      const requiredFields = {
+        pgmNm: t('프로그램명을_입력하세요.'),
+        description: t('프로그램 설명을_입력하세요.'),
+        empNo: t('상담사_사번을_입력하세요.'),
+        programStartDate: t('프로그램 시작일자를_입력하세요.'),
+        programStartTime: t('프로그램 시작일시를_입력하세요.'),
+        startDate: t('신청 시작일자를_입력하세요.'),
+        endDate: t('신청 종료일자를_입력하세요.'),
+      };
+
+      for (const [field, message] of Object.entries(requiredFields)) {
+        if (
+          (typeof form[field] === 'string' && !form[field].trim()) ||
+          (typeof form[field] !== 'string' && !form[field])
+        ) {
+          _errors[field] = _errors[field] ?? [];
+          _errors[field].push(message);
+          hasErrors = true;
+        }
+      }
+
+      const programStartDate = new Date(form.programStartDate);
+      const startDate = new Date(form.startDate);
+      const endDate = new Date(form.endDate);
+
+      if (programStartDate < startDate || programStartDate < endDate) {
+        _errors.programStartDate = _errors.programStartDate ?? [];
+        _errors.programStartDate.push(
+          t('프로그램 시작일은 신청 기간보다 과거일 수 없습니다.'),
+        );
+        hasErrors = true;
+      }
+
+      if (endDate < startDate) {
+        _errors.endDate = _errors.endDate ?? [];
+        _errors.endDate.push(
+          t('신청 종료일자는 신청 시작일자보다 과거일 수 없습니다.'),
+        );
+        hasErrors = true;
+      }
+
+      setErrors(_errors);
+      if (hasErrors) {
+        return;
+      }
+
       /* 유효성 검사 E */
 
       (async () => {
@@ -78,12 +145,10 @@ const GroupUpdateContainer = ({ params }) => {
           setErrors(
             typeof message === 'string' ? { global: [message] } : message,
           );
-
-          // 에러 처리 로직 추가
         }
       })();
     },
-    [form, pgmSeq],
+    [form, t, router, pgmSeq],
   );
 
   return (
