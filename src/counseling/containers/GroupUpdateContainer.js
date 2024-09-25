@@ -49,6 +49,12 @@ const GroupUpdateContainer = ({ params }) => {
         try {
           const data = await apiGetGroupProgramView(pgmSeq);
           if (data) {
+            let _date = data.pgmStartDate;
+            if (_date && _date.trim()) {
+              _date = _date.split(' ');
+              data.programStartDate = _date[0];
+              data.programStartTime = _date[1];
+            }
             setForm(data);
           }
         } catch (err) {
