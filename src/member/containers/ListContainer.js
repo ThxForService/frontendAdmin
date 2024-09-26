@@ -15,8 +15,6 @@ const ListContainer = () => {
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
    const [page, setPage] = useState(1);
-   const [modalOpen, setModalOpen] = useState(false);
-   const [selectedMember, setSelectedMember] = useState(null);
 
   useLayoutEffect(() => {
     setMenuCode('member');
@@ -54,16 +52,6 @@ const ListContainer = () => {
 
 
 
-  const handleEmailClick = (member) => {
-    setSelectedMember(member); // 클릭한 회원 정보 설정
-    setModalOpen(true); // 모달 열기
-  };
-
-  const closeModal = () => {
-    setModalOpen(false); // 모달 닫기
-    setSelectedMember(null); // 선택된 회원 초기화
-  };
-
   // 회원 삭제 클릭 핸들러
   const handleDeleteClick = async (member) => {
     if (window.confirm(`정말로 ${member.username}님을 탈퇴시키겠습니까?`)) {
@@ -94,7 +82,6 @@ const ListContainer = () => {
         memberList={memberList}
         loading={loading}
         error={error}
-        onEmailClick={handleEmailClick} // 이메일 클릭 핸들러 전달
         onDeleteClick={handleDeleteClick} // 삭제 핸들러 전달
       />
       <Pagination pagination={pagination} onClick={onPageClick} />

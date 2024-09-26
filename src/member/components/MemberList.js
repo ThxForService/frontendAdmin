@@ -5,7 +5,7 @@ import styled from 'styled-components';
 // 스타일 컴포넌트 정의
 const Wrapper = styled.div`
     width: 100%;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 20px auto;
     padding: 10px;
     background-color: #f9f9f9;
@@ -51,7 +51,7 @@ const LoadingMessage = styled.div`
     font-weight: bold;
 `;
 
-const MemberList = ({ memberList = [], loading, error, onEmailClick, onDeleteClick }) => {
+const MemberList = ({ memberList = [], loading, error, onDeleteClick }) => {
   const { t } = useTranslation();
 
   if (loading) {
@@ -73,7 +73,9 @@ const MemberList = ({ memberList = [], loading, error, onEmailClick, onDeleteCli
             <Th>{t('이메일(ID)')}</Th>
             <Th>{t('권한')}</Th> {/* 권한 컬럼 추가 */}
             <Th>{t('가입일')}</Th>
-            <Th>{t('탈퇴')}</Th>
+            <Th>{t('회원상태')}</Th>
+            <Th>{t('수정일')}</Th>
+            <Th>{t('회원탈퇴')}</Th>
           </Tr>
         </Thead>
         <tbody>
@@ -82,13 +84,15 @@ const MemberList = ({ memberList = [], loading, error, onEmailClick, onDeleteCli
             <Tr key={`member_${member.memberSeq}`}>
               <Td>{member.memberSeq}</Td>
               <Td>{member.username}</Td>
-              <Td onClick={() => onEmailClick(member)} style={{ cursor: 'pointer', color: 'blue' }}>
+              <Td>
                 {member.email}
               </Td>
               <Td>{member.authority}</Td> {/* 권한 데이터 표시 */}
               <Td>{member.createdAt}</Td>
+              <Td>{member.status}</Td> {/* 권한 데이터 표시 */}
+              <Td>{member.modifiedAt}</Td>
               <Td>
-                <button onClick={() => onDeleteClick(member)}>{t('탈퇴')}</button>
+                <button onClick={() => onDeleteClick(member) } style={{ cursor: 'pointer'}}>{t('탈퇴')}</button>
               </Td>
             </Tr>
           ))
