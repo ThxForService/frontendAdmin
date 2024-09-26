@@ -44,9 +44,10 @@ const GroupProgramForm = ({
   onReset,
   onClick,
   status,
+  onDelete,
 }) => {
   const { t } = useTranslation();
-
+  console.log('form', form);
   return (
     <FormBox autoComplete="off" onSubmit={onSubmit}>
       <dl>
@@ -91,7 +92,9 @@ const GroupProgramForm = ({
             value={form?.programStartDate ?? ''}
             onChange={onChange}
           />
-          <StyledMessage variant="danger">{errors?.programStartDate}</StyledMessage>
+          <StyledMessage variant="danger">
+            {errors?.programStartDate}
+          </StyledMessage>
         </dd>
       </dl>
       <dl>
@@ -103,7 +106,9 @@ const GroupProgramForm = ({
             value={form?.programStartTime ?? ''}
             onChange={onChange}
           />
-          <StyledMessage variant="danger">{errors?.programStartTime}</StyledMessage>
+          <StyledMessage variant="danger">
+            {errors?.programStartTime}
+          </StyledMessage>
         </dd>
       </dl>
       <dl>
@@ -166,6 +171,9 @@ const GroupProgramForm = ({
         {t('다시 입력')}
       </button>
       <button type="submit">{t('등록')}</button>
+      <button type="button" onClick={() => onDelete(form.pgmSeq)}>
+        {t('삭제')}
+      </button>
     </FormBox>
   );
 };

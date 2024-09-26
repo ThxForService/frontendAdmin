@@ -34,19 +34,7 @@ export const apiUpdateGroupCounseling = (pgmSeq, form) =>
 
 //프로그램 삭제
 export const apiDeleteGroupCounseling = (pgmSeq) =>
-  new Promise((resolve, reject) => {
-    apiRequest(`/reservation/admin/group/${pgmSeq}`, 'DELETE')
-      .then((res) => {
-        if (res.status !== 204) {
-          reject(res.data);
-          return;
-        }
-        resolve();
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+  requestData(`/reservation/admin/group/${pgmSeq}`, 'DELETE');
 
 // 프로그램 목록 조회
 export const apiGetGroupProgramList = (searchParams) =>

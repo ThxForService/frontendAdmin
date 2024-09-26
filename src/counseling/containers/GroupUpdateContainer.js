@@ -16,6 +16,7 @@ import {
 } from '../apis/apiGroupProgram';
 
 import status from '../constants/programStatus';
+import { apiDeleteGroupCounseling } from '../apis/apiGroupProgram';
 
 const initialForm = {
   pgmNm: '',
@@ -29,7 +30,7 @@ const initialForm = {
   empNo: '',
 };
 
-const GroupUpdateContainer = ({ params }) => {
+const GroupUpdateContainer = ({ params, searchParams }) => {
   const { setMenuCode, setSubMenuCode } = getCommonActions();
 
   const { pgmSeq } = params;
@@ -157,6 +158,45 @@ const GroupUpdateContainer = ({ params }) => {
     [form, t, router, pgmSeq],
   );
 
+  const onDelete = useCallback(
+    (pgmSeq) => {
+      if (!confirm(t('정말 삭제하겠습니까?'))) {
+        return;
+      }
+
+      (async () => {
+        try {
+          await apiDeleteGroupCounseling(pgmSeq);
+
+          router.replace('/counseling/group');
+        } catch (err) {
+          console.error(err);
+        }
+      })();
+    },
+    [t, router],
+  );
+  /*
+  const onDelete = useCallback(
+    (pgmSeq) => {
+      if (!confirm(t('정말 삭제하겠습니까?'))) {
+        return;
+      }
+        try {
+          await apiDeleteGroupCounseling(pgmSeq);
+          const res = await apiGetGroupProgramList(searchParams);
+          setPrograms(res.items);
+          alert(t('삭제가 완료되었습니다.'));
+        } catch (err) {
+          console.error(err);
+          setErrors(err.message);
+          alert(t('삭제 중 오류가 발생했습니다.'));
+        }
+      }
+    },
+    [searchParams, t],
+  );
+  */
   return (
     <GroupProgramForm
       form={form}
@@ -166,6 +206,7 @@ const GroupUpdateContainer = ({ params }) => {
       onClick={onClick}
       status={status}
       onSubmit={onSubmit}
+      onDelete={onDelete}
     />
   );
 };
