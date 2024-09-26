@@ -1,18 +1,16 @@
 'use client';
-import React, { useLayoutEffect, useState, useEffect, useCallback } from 'react';
+import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { getCommonActions } from '@/commons/contexts/CommonContext';
-import { useRouter } from 'next/navigation';
-import { getBoardInfo, createBoard, updateBoard } from '@/board/apis/apiboard';
 import Form from '@/board/components/Form';
+import { getBoardInfo } from '@/board/apis/apiboard';
 
 const BoardContainer = ({ bid }) => {
   const { setMenuCode, setSubMenuCode } = getCommonActions();
-  const router = useRouter();
-  const [form, setForm] = useState({
-    mode: bid ? 'edit' : 'add',
-    bid: bid || '',
-    bname: '',
+  const [initialValues, setInitialValues] = useState({
+    mode: 'add',
     listOrder: 0,
+    bid: '',
+    bname: '',
     active: false,
     rowsPerPage: 20,
     pageCountPc: 10,
@@ -22,66 +20,40 @@ const BoardContainer = ({ bid }) => {
     useEditor: false,
     useUploadImage: false,
     useUploadFile: false,
+    locationAfterWriting: 'list',
+    showListBelowView: false,
+    skin: 'default',
+    category: '',
+    listAccessType: 'ALL',
+    viewAccessType: 'ALL',
+    writeAccessType: 'ALL',
+    replyAccessType: 'ALL',
+    commentAccessType: 'ALL',
     htmlTop: '',
     htmlBottom: ''
   });
-  const [errors, setErrors] = useState(null);
 
   useLayoutEffect(() => {
     setMenuCode('board');
-    setSubMenuCode(bid ? 'update' : 'register');
-  }, [setMenuCode, setSubMenuCode, bid]);
-
-  useEffect(() => {
+    setSubMenuCode(bid ? 'update' : 'register'); 
     if (bid) {
-      fetchBoardInfo();
+      fetchBoardInfo(); 
     }
-  }, [bid]);
+  }, [setSubMenuCode, setMenuCode, bid]);
 
   const fetchBoardInfo = async () => {
     try {
       const data = await getBoardInfo(bid);
-      setForm({
-        ...data,
-        mode: 'edit',
-      });
+      setInitialValues({ ...data, mode: 'edit' });
     } catch (error) {
       console.error(error);
     }
   };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prevForm) => ({
-      ...prevForm,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-  };
-
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    try {
-      if (form.mode === 'edit') {
-        await updateBoard(form);
-      } else {
-        await createBoard(form);
-      }
-      router.replace('/board/list');
-    } catch (error) {
-      setErrors(error.message);
-      console.error(error);
-    }
-  }, [form, router]);
 
   return (
     <div>
-      <h1>{form.mode === 'edit' ? '게시판 수정' : '게시판 등록'}</h1>
-      <Form
-        form={form}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-      />
-      {errors && <div className="error">{errors}</div>}
+      <h1>{bid ? '게시판 수정' : '게시판 등록'}</h1>
+      <Form initialValues={initialValues} />
     </div>
   );
 };

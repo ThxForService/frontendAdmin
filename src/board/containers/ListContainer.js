@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { getCommonActions } from '@/commons/contexts/CommonContext';
 import List from '@/board/components/List';
-import { boardList, deleteBoard } from '@/board/apis/apiboard'; 
+import { boardList, deleteBoard } from '@/board/apis/apiboard';
 const ListContainer = () => {
   const { setMenuCode, setSubMenuCode } = getCommonActions();
   const [items, setItems] = useState([]);
 
-  // 메뉴 코드 설정 
+  // 메뉴 코드 설정
   useLayoutEffect(() => {
     setMenuCode('board');
     setSubMenuCode('list');
@@ -37,16 +37,11 @@ const ListContainer = () => {
     fetchBoardList();
   }, []);
 
-
   return (
-    <section>
+    <div>
       <h1>게시판 목록</h1>
-
-      <List
-        items={items}
-        onDelete={handleDelete} 
-      />
-    </section>
+      <List items={items} onDelete={handleDelete} />
+    </div>
   );
 };
 

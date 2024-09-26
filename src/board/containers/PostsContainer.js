@@ -19,7 +19,7 @@ const PostsContainer = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const data = await boardDataList({ page: 1, limit: 10 });
+      const data = await boardDataList({ page: 1, limit: 10 }); 
       setPosts(data);
     } catch (err) {
       setError(err);
@@ -30,7 +30,7 @@ const PostsContainer = () => {
   };
 
   if (loading) return <h1>Loading...</h1>;
-  if (error) return <h1>Error loading posts: {error.message}</h1>;
+  if (error) return <h1>{error.message}</h1>;
 
   return (
     <div>
