@@ -1,9 +1,9 @@
-import UpdateContainer from '@/board/containers/UpdateContainer';
+import RegisterContainer from '@/board/containers/RegisterContainer';
 import AdminOnlyContainer from '@/member/containers/AdminOnlyContainer';
 const BoardRegisterPage = () => {
   return (
     <AdminOnlyContainer>
-      <UpdateContainer />
+      <RegisterContainer />
     </AdminOnlyContainer>
   );
 };
