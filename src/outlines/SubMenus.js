@@ -56,7 +56,6 @@ function getSubMenus(menuCode) {
       ];
     case 'counseling': //상담관리
       return [
-        { code: 'apply', name: '상담 접수 목록', url: '/counseling' },
         { code: 'group', name: '집단 상담 프로그램', url: '/counseling/group' },
         {
           code: 'register',
