@@ -1,155 +1,184 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createBoard, updateBoard } from '@/board/apis/apiboard';
+import { useRouter } from 'next/navigation';
+import styled from 'styled-components';
+import { FaCheckSquare, FaSquare } from 'react-icons/fa'; 
 
-const Form = ({
-  form,
-  handleChange,
-  handleSubmit,
-}) => (
-  <form onSubmit={handleSubmit}>
-    <div>
-      <label>게시판 ID:</label>
-      <input
-        type="text"
-        name="bid"
-        value={form.bid}
-        onChange={handleChange}
-        required
-        readOnly={form.mode === 'edit'}
-      />
-    </div>
+const FormContainer = styled.form`
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: auto;
+  background-color: #f9f9f9; 
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-    <div>
-      <label>게시판 이름:</label>
-      <input
-        type="text"
-        name="bname"
-        value={form.bname}
-        onChange={handleChange}
-        required
-      />
-    </div>
+  div {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
+    display: flex; 
+    align-items: center;
+  }
 
-    <div>
-      <label>진열 가중치:</label>
-      <input
-        type="number"
-        name="listOrder"
-        value={form.listOrder}
-        onChange={handleChange}
-      />
-    </div>
+  label {
+    margin-right: 10px;
+    cursor: pointer; 
+  }
 
-    <div>
-      <label>활성화:</label>
-      <input
-        type="checkbox"
-        name="active"
-        checked={form.active}
-        onChange={handleChange}
-      />
-    </div>
+  button {
+    padding: 10px;
+    background-color: #b0c4de;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
 
-    <div>
-      <label>게시판 스킨:</label>
-      <select name="skin" value={form.skin} onChange={handleChange}>
-        <option value="default">default</option>
-      </select>
-    </div>
+  button:hover {
+    opacity: 0.8;
+  }
 
-    <div>
-      <label>한 페이지당 게시글 수:</label>
-      <input
-        type="number"
-        name="rowsPerPage"
-        value={form.rowsPerPage}
-        onChange={handleChange}
-      />
-    </div>
+  .error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+  }
+`;
 
-    <div>
-      <label>PC 네비게이션 수:</label>
-      <input
-        type="number"
-        name="pageCountPc"
-        value={form.pageCountPc}
-        onChange={handleChange}
-      />
-    </div>
+const Form = ({ initialValues }) => {
+  const [form, setForm] = useState(initialValues);
+  const [errors, setErrors] = useState(null);
+  const router = useRouter();
 
-    <div>
-      <label>모바일 네비게이션 수:</label>
-      <input
-        type="number"
-        name="pageCountMobile"
-        value={form.pageCountMobile}
-        onChange={handleChange}
-      />
-    </div>
+  useEffect(() => {
+    setForm(initialValues);
+  }, [initialValues]);
 
-    <div>
-      <label>답글 사용:</label>
-      <input
-        type="checkbox"
-        name="useReply"
-        checked={form.useReply}
-        onChange={handleChange}
-      />
-    </div>
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm({
+      ...form,
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
 
-    <div>
-      <label>댓글 사용:</label>
-      <input
-        type="checkbox"
-        name="useComment"
-        checked={form.useComment}
-        onChange={handleChange}
-      />
-    </div>
+  const handleToggle = (name) => {
+    setForm({
+      ...form,
+      [name]: !form[name],
+    });
+  };
 
-    <div>
-      <label>에디터 사용:</label>
-      <input
-        type="checkbox"
-        name="useEditor"
-        checked={form.useEditor}
-        onChange={handleChange}
-      />
-    </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (form.mode === 'edit') {
+        await updateBoard(form);
+      } else {
+        await createBoard(form);
+      }
+      router.replace('/board/list');
+    } catch (error) {
+      setErrors(error.message);
+      console.error(error);
+    }
+  };
 
-    <div>
-      <label>이미지 첨부 사용:</label>
-      <input
-        type="checkbox"
-        name="useUploadImage"
-        checked={form.useUploadImage}
-        onChange={handleChange}
-      />
-    </div>
+  return (
+    <FormContainer onSubmit={handleSubmit}>
+      <div>
+        <label>게시판 ID:</label>
+        <input
+          type="text"
+          name="bid"
+          value={form.bid}
+          onChange={handleChange}
+          required
+          readOnly={form.mode === 'edit'}
+        />
+      </div>
 
-    <div>
-      <label>파일 첨부 사용:</label>
-      <input
-        type="checkbox"
-        name="useUploadFile"
-        checked={form.useUploadFile}
-        onChange={handleChange}
-      />
-    </div>
+      <div>
+        <label>게시판 이름:</label>
+        <input
+          type="text"
+          name="bname"
+          value={form.bname}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-    <div>
-      <label>HTML 상단:</label>
-      <textarea name="htmlTop" value={form.htmlTop} onChange={handleChange} />
-    </div>
+      <div>
+        <label onClick={() => handleToggle('active')}>
+          활성화 {form.active ? <FaCheckSquare /> : <FaSquare />}
+        </label>
+      </div>
 
-    <div>
-      <label>HTML 하단:</label>
-      <textarea name="htmlBottom" value={form.htmlBottom} onChange={handleChange} />
-    </div>
+      <div>
+        <label>한 페이지당 게시글 수:</label>
+        <input
+          type="number"
+          name="rowsPerPage"
+          value={form.rowsPerPage}
+          onChange={handleChange}
+        />
+      </div>
 
-    <button type="submit">
-      {form.mode === 'edit' ? '게시판 수정' : '게시판 등록'}
-    </button>
-  </form>
-);
+      <div>
+        <label>PC 네비게이션 수:</label>
+        <input
+          type="number"
+          name="pageCountPc"
+          value={form.pageCountPc}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div>
+        <label>모바일 네비게이션 수:</label>
+        <input
+          type="number"
+          name="pageCountMobile"
+          value={form.pageCountMobile}
+          onChange={handleChange}
+        />
+      </div>
+
+
+      <div>
+        <label onClick={() => handleToggle('useComment')}>
+          댓글 사용 {form.useComment ? <FaCheckSquare /> : <FaSquare />}
+        </label>
+      </div>
+
+      <div>
+        <label onClick={() => handleToggle('useEditor')}>
+          에디터 사용 {form.useEditor ? <FaCheckSquare /> : <FaSquare />}
+        </label>
+      </div>
+
+      <div>
+        <label onClick={() => handleToggle('useUploadImage')}>
+          이미지 첨부 사용{' '}
+          {form.useUploadImage ? <FaCheckSquare /> : <FaSquare />}
+        </label>
+      </div>
+
+      <div>
+        <label onClick={() => handleToggle('useUploadFile')}>
+          파일 첨부 사용 {form.useUploadFile ? <FaCheckSquare /> : <FaSquare />}
+        </label>
+      </div>
+
+      <button type="submit">
+        {form.mode === 'edit' ? '게시판 수정' : '게시판 등록'}
+      </button>
+
+      {errors && <div className="error">{errors}</div>}
+    </FormContainer>
+  );
+};
 
 export default Form;
