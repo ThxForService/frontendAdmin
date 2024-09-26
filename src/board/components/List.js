@@ -25,9 +25,6 @@ const List = ({ items, onCheckItem, onDelete }) => {
               <td>{item.bname}</td>
               <td>
                 <a href={`/board/update/${item.bid}`}>수정하기</a>
-                <a href={`/board/list/${item.bid}`} target="_blank">
-                  미리보기
-                </a>
                 <button onClick={() => onDelete(item.bid)}>삭제하기</button>
               </td>
             </tr>
