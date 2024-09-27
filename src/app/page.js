@@ -1,3 +1,10 @@
+import AdminOnlyContainer from '@/member/containers/AdminOnlyContainer';
+import ListContainer from '@/member/containers/ListContainer';
+
 export default function Home() {
-  return <h1>테스트</h1>;
+  return (
+    <AdminOnlyContainer>
+      <ListContainer />
+    </AdminOnlyContainer>
+  );
 }

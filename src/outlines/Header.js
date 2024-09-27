@@ -4,6 +4,8 @@ import cookies from 'react-cookies';
 import { useTranslation } from 'react-i18next';
 import { getCommonStates } from '../commons/contexts/CommonContext';
 import { getUserContext } from '@/commons/contexts/UserInfoContext';
+import { useRouter } from 'next/navigation';
+
 const HeaderBox = styled.header`
   .site-top {
     background: ${({ theme }) => theme.colors.white};
@@ -12,11 +14,15 @@ const HeaderBox = styled.header`
     div {
       text-align: right;
 
-      a {
+      a, span {
         display: inline-block;
         line-height: 34px;
-        margin-left: 10px;
+        margin-left: 15px; // Adjusted margin for spacing
         font-size: ${({ theme }) => theme.fontSizes.normal};
+        
+        &.logout {
+          cursor: pointer; // Change cursor to pointer on hover
+        }
 
         &.on {
           color: ${({ theme }) => theme.colors.primary};
@@ -33,12 +39,18 @@ const Header = () => {
     states: { isLogin, userInfo, isAdmin },
     actions: { setIsLogin, setIsAdmin, setUserInfo },
   } = getUserContext();
+
+  const router = useRouter();
+
   const onLogout = useCallback(() => {
     setIsLogin(false);
     setIsAdmin(false);
     setUserInfo(null);
     cookies.remove('token', { path: '/' });
-  }, [setIsLogin, setIsAdmin, setUserInfo]);
+
+    router.push('http://thxforservice.xyz:7000');
+
+  }, [setIsLogin, setIsAdmin, setUserInfo, router]);
 
   return (
     showHeader && (
@@ -49,9 +61,9 @@ const Header = () => {
               <>
                 {/* 로그인 상태 */}
                 <span>
-                  {userInfo?.userName}({userInfo?.email}){t('님_로그인')}
+                  {userInfo?.username}({userInfo?.email}){t('관리자님_로그인')}
                 </span>
-                <span onClick={onLogout}>{t('로그아웃')}</span>
+                <span className="logout" onClick={onLogout} >{t('로그아웃')}</span>
               </>
             ) : (
               <>
