@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import cookies from 'react-cookies';
 import { useTranslation } from 'react-i18next';
@@ -27,10 +27,11 @@ const HeaderBox = styled.header`
 `;
 
 const Header = () => {
+  const [login, setLogin] = useState(false);
   const { t } = useTranslation();
   const { showHeader } = getCommonStates();
   const {
-    states: { isLogin, userInfo, isAdmin },
+    states: { isLogin, userInfo },
     actions: { setIsLogin, setIsAdmin, setUserInfo },
   } = getUserContext();
   const onLogout = useCallback(() => {
@@ -40,16 +41,20 @@ const Header = () => {
     cookies.remove('token', { path: '/' });
   }, [setIsLogin, setIsAdmin, setUserInfo]);
 
+  useEffect(() => {
+    setLogin(isLogin);
+  }, [isLogin]);
+
   return (
     showHeader && (
       <HeaderBox>
         <section className="site-top">
           <div className="layout-width">
-            {isLogin ? (
+            {login ? (
               <>
                 {/* 로그인 상태 */}
                 <span>
-                  {userInfo?.userName}({userInfo?.email}){t('님_로그인')}
+                  {userInfo?.username}({userInfo?.email}){t('님_로그인')}
                 </span>
                 <span onClick={onLogout}>{t('로그아웃')}</span>
               </>
