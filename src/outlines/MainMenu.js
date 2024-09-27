@@ -49,7 +49,7 @@ const MainMenu = () => {
           {t('게시판목록')}
         </a>
         <a
-          href="/counseling"
+          href="/counseling/group"
           className={classNames({ on: menuCode === 'counseling' })}
         >
           {t('상담 관리')}
